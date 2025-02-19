@@ -1,6 +1,6 @@
-# Arduino-ESP32 Zigbee Occupancy Sensor Example
+# Arduino-ESP32 Zigbee Basic On Off Example
 
-This example shows how to configure the Zigbee end device and use it as a Home Automation (HA) occupancy sensor (PIR).
+This example shows how to configure the Zigbee end device and use it as a Home Automation (HA) basic on off switch.
 
 # Supported Targets
 
