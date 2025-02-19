@@ -11,6 +11,7 @@ esp_zb_cluster_list_t *zigbee_carbon_dioxide_sensor_clusters_create(zigbee_carbo
   esp_zb_cluster_list_add_carbon_dioxide_measurement_cluster(
     cluster_list, esp_zb_carbon_dioxide_measurement_cluster_create(carbon_dioxide_meas_cfg), ESP_ZB_ZCL_CLUSTER_SERVER_ROLE
   );
+  esp_zb_cluster_list_add_identify_cluster(cluster_list, esp_zb_zcl_attr_list_create(ESP_ZB_ZCL_CLUSTER_ID_IDENTIFY), ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
   return cluster_list;
 }
 
@@ -37,7 +38,7 @@ void ZigbeeCarbonDioxideSensor::setTolerance(float tolerance) {
   float zb_tolerance = tolerance / 1000000.0f;
   esp_zb_attribute_list_t *carbon_dioxide_measure_cluster =
     esp_zb_cluster_list_get_cluster(_cluster_list, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
-  esp_zb_temperature_meas_cluster_add_attr(carbon_dioxide_measure_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_TOLERANCE_ID, (void *)&zb_tolerance);
+  esp_zb_carbon_dioxide_measurement_cluster_add_attr(carbon_dioxide_measure_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_TOLERANCE_ID, (void *)&zb_tolerance);
 }
 
 void ZigbeeCarbonDioxideSensor::setReporting(uint16_t min_interval, uint16_t max_interval, uint16_t delta) {
@@ -55,11 +56,9 @@ void ZigbeeCarbonDioxideSensor::setReporting(uint16_t min_interval, uint16_t max
   reporting_info.u.send_info.max_interval = max_interval;
   reporting_info.u.send_info.def_min_interval = min_interval;
   reporting_info.u.send_info.def_max_interval = max_interval;
+  reporting_info.u.send_info.delta.u16 = delta;
   reporting_info.dst.profile_id = ESP_ZB_AF_HA_PROFILE_ID;
   reporting_info.manuf_code = ESP_ZB_ZCL_ATTR_NON_MANUFACTURER_SPECIFIC;
-  float delta_f = delta / 1000000.0f;
-  memcpy(&reporting_info.u.send_info.delta.s32, &delta_f, sizeof(float));
-
   esp_zb_lock_acquire(portMAX_DELAY);
   esp_zb_zcl_update_reporting_info(&reporting_info);
   esp_zb_lock_release();
