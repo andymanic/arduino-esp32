@@ -20,3 +20,4 @@
 #include "ep/ZigbeeCarbonDioxideSensor.h"
 #include "ep/ZigbeeLightSensor.h"
 #include "ep/ZigbeeBasicOnOffSensor.h"
+#include "ep/ZigbeeBasicOnOffDevice.h"

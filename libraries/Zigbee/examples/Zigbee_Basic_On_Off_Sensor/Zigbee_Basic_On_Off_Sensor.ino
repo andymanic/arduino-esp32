@@ -38,12 +38,9 @@
 #define ON_OFF_SENSOR_ENDPOINT_NUMBER 10
 uint8_t button = BOOT_PIN;
 uint8_t sensor_pin = 4;
+uint8_t led = LED_BUILTIN;
 
-ZigbeeBasicOnOffDevice zbOnOffDevice = ZigbeeBasicOnOffDevice(ON_OFF_SENSOR_ENDPOINT_NUMBER);
-
-void setState(bool value) {
-  digitalWrite(LED_BUILTIN, value);
-}
+ZigbeeBasicOnOffSensor zbOnOffDevice = ZigbeeBasicOnOffSensor(ON_OFF_SENSOR_ENDPOINT_NUMBER);
 
 void setup() {
   Serial.begin(115200);
@@ -52,11 +49,10 @@ void setup() {
   pinMode(button, INPUT_PULLUP);
   pinMode(sensor_pin, INPUT);
 
+  pinMode(led, OUTPUT);
+  digitalWrite(led, LOW);
   // Optional: set Zigbee device name and model
-  zbOnOffDevice.setManufacturerAndModel("Espressif", "ZigbeeOnOffDevice");
-
-  // Set callback function for receiving state changes from Zigbee
-  zbOnOffDevice.onStateChange(setState);
+  zbOnOffDevice.setManufacturerAndModel("Espressif", "ZigbeeOnOffSensor");
 
   // Add endpoint to Zigbee Core
   Zigbee.addEndpoint(&zbOnOffDevice);
@@ -84,10 +80,12 @@ void loop() {
   if (digitalRead(sensor_pin) == HIGH && !state) {
     // Update state value
     zbOnOffDevice.setState(true);
+    digitalWrite(led, HIGH);
     zbOnOffDevice.report();
     state = true;
   } else if (digitalRead(sensor_pin) == LOW && state) {
     zbOnOffDevice.setState(false);
+    digitalWrite(led, LOW);
     zbOnOffDevice.report();
     state = false;
   }

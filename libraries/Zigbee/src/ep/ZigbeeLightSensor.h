@@ -26,7 +26,7 @@
                 .min_value = ESP_ZB_ZCL_ILLUMINANCE_MEASUREMENT_LIGHT_SENSOR_TYPE_DEFAULT_VALUE,        \
                 .max_value = ESP_ZB_ZCL_ILLUMINANCE_MEASUREMENT_LIGHT_SENSOR_TYPE_DEFAULT_VALUE,        \
             },                                                                                          \
-    }                                                                                               /
+    }                                                                                               
 
 class ZigbeeLightSensor : public ZigbeeEP {
 public:
